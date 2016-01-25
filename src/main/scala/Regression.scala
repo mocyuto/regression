@@ -38,8 +38,9 @@ object Regression {
    * @param XSeq Explanatory variables by Sequence of DenseVector
    * @return DenseVector of regression coefficient
    */
-  def regression(y:DenseVector[Double], XSeq: DenseVector[Double]*): DenseVector[Double] = {
-    val X = DenseMatrix.horzcat(XSeq: _*)
+  def regression(y: DenseVector[Double], XSeq: DenseVector[Double]*): DenseVector[Double] = {
+    val matSeq = XSeq.map(_.toDenseMatrix)
+    val X = DenseMatrix.horzcat(matSeq: _*)
     regression(y, X)
   }
 
@@ -49,6 +50,6 @@ object Regression {
    * @param X Explanatory variables by DenseMatrix
    * @return DenseVector of regression coefficient
    */
-  def regression(y:DenseVector[Double], X: DenseMatrix[Double]): DenseVector[Double] =  (inv(X.t * X) * X.t) * y
+  def regression(y: DenseVector[Double], X: DenseMatrix[Double]): DenseVector[Double] = (inv(X.t * X) * X.t) * y
 
 }
