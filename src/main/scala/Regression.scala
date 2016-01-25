@@ -17,6 +17,11 @@ object Regression {
     }
   }
 
+  /**
+   * calculate regression by CSV
+   * @param file csv file
+   * @return DenseVector of regression coefficient
+   */
   def regression(file: File): DenseVector[Double] = {
     val mat = csvread(file, skipLines = 1)
     val y = mat(::, mat.cols - 1)
@@ -24,6 +29,26 @@ object Regression {
       DenseMatrix.tabulate(mat.rows, 1) { case _ => 1.0 },
       mat(::, 1 to mat.cols - 2)
     )
-    (inv(X.t * X) * X.t) * y
+    regression(y, X)
   }
+
+  /**
+   * calculate regression
+   * @param y Objective variables
+   * @param XSeq Explanatory variables by Sequence of DenseVector
+   * @return DenseVector of regression coefficient
+   */
+  def regression(y:DenseVector[Double], XSeq: DenseVector[Double]*): DenseVector[Double] = {
+    val X = DenseMatrix.horzcat(XSeq: _*)
+    regression(y, X)
+  }
+
+  /**
+   * caculate regression
+   * @param y Objective variables
+   * @param X Explanatory variables by DenseMatrix
+   * @return DenseVector of regression coefficient
+   */
+  def regression(y:DenseVector[Double], X: DenseMatrix[Double]): DenseVector[Double] =  (inv(X.t * X) * X.t) * y
+
 }
