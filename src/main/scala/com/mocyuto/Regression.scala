@@ -2,10 +2,12 @@ package com.mocyuto
 
 import java.io.File
 
-import breeze.linalg._
+import com.mocyuto.response.RegressionResponse
 
-object Regression {
-
+/**
+ * Created by Yuto Suzuki on 2016/01/25.
+ */
+trait Regression {
   /**
    * CSVのフォーマット
    * Boston.csv(https://sense.io/csrudolflai/data-mining-with-r/files/Boston.csv)の形式を想定
@@ -15,44 +17,10 @@ object Regression {
   def main(args: Array[String]): Unit = {
     if (args.length == 0) throw new Exception
     else {
-      val beta = regression(new File(args(0)))
-      println(beta)
+      val beta = run(new File(args(0))).coefficients
+      beta.foreach(b => print(b))
     }
   }
 
-  /**
-   * calculate regression by CSV
-   * @param file csv file
-   * @return DenseVector of regression coefficient
-   */
-  def regression(file: File): DenseVector[Double] = {
-    val mat = csvread(file, skipLines = 1)
-    val y = mat(::, mat.cols - 1)
-    val X = DenseMatrix.horzcat(
-      DenseMatrix.tabulate(mat.rows, 1) { case _ => 1.0 },
-      mat(::, 1 to mat.cols - 2)
-    )
-    regression(y, X)
-  }
-
-  /**
-   * calculate regression
-   * @param y Objective variables
-   * @param XSeq Explanatory variables by Sequence of DenseVector
-   * @return DenseVector of regression coefficient
-   */
-  def regression(y: DenseVector[Double], XSeq: DenseVector[Double]*): DenseVector[Double] = {
-    val matSeq = XSeq.map(_.toDenseMatrix)
-    val X = DenseMatrix.horzcat(matSeq: _*)
-    regression(y, X)
-  }
-
-  /**
-   * caculate regression
-   * @param y Objective variables
-   * @param X Explanatory variables by DenseMatrix
-   * @return DenseVector of regression coefficient
-   */
-  def regression(y: DenseVector[Double], X: DenseMatrix[Double]): DenseVector[Double] = (inv(X.t * X) * X.t) * y
-
+  def run(file: File): RegressionResponse
 }
