@@ -2,6 +2,7 @@ package com.mocyuto
 
 import java.io.File
 
+import breeze.linalg.{ DenseMatrix, DenseVector }
 import com.mocyuto.response.RegressionResponse
 
 /**
@@ -22,5 +23,19 @@ trait Regression {
     }
   }
 
+  /**
+   * calculate regression by csv file
+   * @param file
+   * @return
+   */
   def run(file: File): RegressionResponse
+
+  /**
+   * calculate regression
+   * @param y Objective variables
+   * @param X Explanatory variables by DenseMatrix
+   * @return DenseVector of regression coefficient
+   */
+  def run(y: DenseVector[Double], X: DenseMatrix[Double]): RegressionResponse
+
 }
