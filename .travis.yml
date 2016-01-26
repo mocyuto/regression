@@ -1,0 +1,16 @@
+# See http://about.travis-ci.org/docs/user/build-configuration/
+language: scala
+scala:
+   - 2.10.4
+   - 2.11.2
+   - 2.11.7
+branches:
+  only:
+    - master
+notifications:
+  email:
+    recipients:
+      - yuutoo.advance@gmail.com
+jdk:
+  - oraclejdk7
+  - oraclejdk8
