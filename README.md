@@ -11,7 +11,7 @@ You need to use **Java1.8**
 
 For SBT, Add these lines to your SBT project definition:
 
-```
+```scala
 libraryDependencies  ++= Seq(
   // other dependencies here
   "org.scalanlp" %% "breeze" % "0.12",
