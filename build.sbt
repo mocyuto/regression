@@ -1,4 +1,8 @@
-version := "0.1"
+name := "regression"
+
+organization := "com.mocyuto"
+
+version := "0.0.1"
 
 scalaVersion := "2.11.7"
 
@@ -23,3 +27,5 @@ resolvers ++= Seq(
   "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
   "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
 )
+
+publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/GitHub/regression/repository")))
