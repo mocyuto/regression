@@ -4,6 +4,9 @@ import java.io.File
 
 import breeze.linalg._
 import com.mocyuto.response.RegressionResponse
+import com.mocyuto.utils.DenseMatrixUtils
+
+import scala.util.Try
 
 object LinearRegression extends Regression {
 
@@ -12,35 +15,44 @@ object LinearRegression extends Regression {
    * @param file csv file
    * @return DenseVector of regression coefficient
    */
-  def run(file: File): RegressionResponse = {
+  def run(lambda: Double = 0, file: File): RegressionResponse = {
     val mat = csvread(file, skipLines = 1)
     val y = mat(::, mat.cols - 1)
     val X = DenseMatrix.horzcat(
       DenseMatrix.tabulate(mat.rows, 1) { case _ => 1.0 },
       mat(::, 1 to mat.cols - 2)
     )
-    run(y, X)
+    run(lambda, y, X)
   }
 
   /**
    * calculate regression
+   * ex)
+   * run(0, DenseVector(1,2), DenseMatrix(), DenseMatrix()...)
    * @param y Objective variables
    * @param XSeq Explanatory variables by Sequence of DenseVector
    * @return DenseVector of regression coefficient
    */
-  def run(y: DenseVector[Double], XSeq: DenseVector[Double]*): RegressionResponse = {
+  def run(lambda: Double, y: DenseVector[Double], XSeq: DenseVector[Double]*): RegressionResponse = {
     val matSeq = XSeq.map(_.toDenseMatrix)
     val X = DenseMatrix.horzcat(matSeq: _*)
-    run(y, X)
+    run(lambda, y, X)
   }
 
   /**
    * calculate regression
+   * @param lambda
    * @param y Objective variables
    * @param X Explanatory variables by DenseMatrix
    * @return DenseVector of regression coefficient
    */
-  def run(y: DenseVector[Double], X: DenseMatrix[Double]): RegressionResponse =
-    RegressionResponse(coefficients = (inv(X.t * X) * X.t) * y, y = y, X = X)
+  def run(lambda: Double, y: DenseVector[Double], X: DenseMatrix[Double]): RegressionResponse = {
+    def powerInv(x: DenseMatrix[Double]) = inv(x.t * x)
+    val inverse = Try(
+      powerInv(X + lambda) * X.t
+    ).getOrElse(DenseMatrixUtils.identify(X.cols))
+
+    RegressionResponse(coefficients = inverse * y, y = y, X = X)
+  }
 
 }

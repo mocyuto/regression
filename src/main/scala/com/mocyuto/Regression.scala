@@ -17,10 +17,10 @@ trait Regression {
   def main(args: Array[String]): Unit = {
     if (args.length == 0) throw new Exception
     else {
-      val beta = run(new File(args(0))).coefficients
+      val beta = run(file = new File(args(0))).coefficients
       beta.foreach(b => print(b))
     }
   }
 
-  def run(file: File): RegressionResponse
+  def run(lambda: Double = 0, file: File): RegressionResponse
 }
