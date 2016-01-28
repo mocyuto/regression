@@ -49,10 +49,10 @@ object LinearRegression extends Regression {
   def run(lambda: Double, y: DenseVector[Double], X: DenseMatrix[Double]): RegressionResponse = {
     def powerInv(x: DenseMatrix[Double]) = inv(x.t * x)
     val inverse = Try(
-      powerInv(X + lambda) * X.t
-    ).getOrElse(DenseMatrixUtils.identify(X.rows))
+      powerInv(X + lambda) * X.t * y
+    ).getOrElse(y)
 
-    RegressionResponse(coefficients = inverse * y, y = y, X = X)
+    RegressionResponse(coefficients = inverse, y = y, X = X)
   }
 
 }
