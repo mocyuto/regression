@@ -4,7 +4,7 @@ import java.io.File
 
 import breeze.linalg._
 import com.mocyuto.response.RegressionResponse
-import com.mocyuto.utils.DenseMatrixUtils
+import breeze.stats._
 
 import scala.util.Try
 
@@ -49,10 +49,10 @@ object LinearRegression extends Regression {
   def run(lambda: Double, y: DenseVector[Double], X: DenseMatrix[Double]): RegressionResponse = {
     def powerInv(x: DenseMatrix[Double]) = inv(x.t * x)
     val inverse = Try(
-      powerInv(X + lambda) * X.t
-    ).getOrElse(DenseMatrixUtils.identify(X.rows))
+      powerInv(X + lambda) * X.t * y
+    ).getOrElse(DenseVector.tabulate(X.cols) { i => if (i == 0) mean(y) else 0 })
 
-    RegressionResponse(coefficients = inverse * y, y = y, X = X)
+    RegressionResponse(coefficients = inverse, y = y, X = X)
   }
 
 }
