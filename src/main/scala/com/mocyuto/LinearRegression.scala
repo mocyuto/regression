@@ -50,7 +50,7 @@ object LinearRegression extends Regression {
     def powerInv(x: DenseMatrix[Double]) = inv(x.t * x)
     val inverse = Try(
       powerInv(X + lambda) * X.t
-    ).getOrElse(DenseMatrixUtils.identify(X.cols))
+    ).getOrElse(DenseMatrixUtils.identify(X.rows))
 
     RegressionResponse(coefficients = inverse * y, y = y, X = X)
   }
