@@ -3,8 +3,8 @@ package com.mocyuto
 import java.io.File
 
 import breeze.linalg._
+import breeze.stats._
 import com.mocyuto.response.RegressionResponse
-import com.mocyuto.utils.DenseMatrixUtils
 
 import scala.util.Try
 
@@ -50,7 +50,7 @@ object LinearRegression extends Regression {
     def powerInv(x: DenseMatrix[Double]) = inv(x.t * x)
     val inverse = Try(
       powerInv(X + lambda) * X.t * y
-    ).getOrElse(y)
+    ).getOrElse(DenseVector.tabulate(X.cols) { i => if (i == 0) mean(y) else 0 })
 
     RegressionResponse(coefficients = inverse, y = y, X = X)
   }
