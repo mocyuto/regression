@@ -47,10 +47,9 @@ object LinearRegression extends Regression {
    * @return DenseVector of regression coefficient
    */
   def run(lambda: Double, y: DenseVector[Double], X: DenseMatrix[Double]): RegressionResponse = {
-    def powerInv(x: DenseMatrix[Double]) = inv(x.t * x)
-    val inverse = Try(
-      powerInv(X + lambda) * X.t * y
-    ).getOrElse(DenseVector.tabulate(X.cols) { i => if (i == 0) mean(y) else 0 })
+    def powerInv(x: DenseMatrix[Double]) = pinv(x.t * x)
+    val inverse = Try(powerInv(X + lambda) * X.t * y)
+      .getOrElse(DenseVector.zeros[Double](X.cols))
 
     RegressionResponse(coefficients = inverse, y = y, X = X)
   }
